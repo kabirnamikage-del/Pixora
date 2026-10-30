@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixora — Discover Ideas</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;color:#222}
+header{position:sticky;top:0;background:white;padding:14px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 5px #ddd;z-index:2}
+.logo{font-size:25px;font-weight:bold;color:#e60023}
+input{min-width:0;flex:1;padding:13px;border:0;border-radius:25px;background:#f1f1f1;font-size:15px}
+button{border:0;border-radius:24px;padding:12px;cursor:pointer;font-weight:bold}
+.upload{background:#e60023;color:white}
+h1{padding:10px 16px 0}
+p{padding:0 16px;color:#666}
+.filters{display:flex;gap:8px;overflow:auto;padding:12px}
+.filters button{background:#eee;white-space:nowrap}
+.grid{columns:2;column-gap:12px;padding:12px}
+.card{break-inside:avoid;margin-bottom:14px;border-radius:15px;overflow:hidden;background:#f5f5f5}
+.card img{width:100%;display:block}
+.card div{padding:10px;font-weight:bold}
+@media(min-width:600px){.grid{columns:3}}
+@media(min-width:900px){.grid{columns:4}}
+@media(min-width:1200px){.grid{columns:5}}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">Pixora</div>
+<input id="search" placeholder="Search ideas...">
+<button class="upload" onclick="document.getElementById('file').click()">＋</button>
+<input type="file" id="file" accept="image/*" hidden>
+</header>
+
+<h1>Find your inspiration ✨</h1>
+<p>Discover beautiful ideas from around the world.</p>
+
+<div class="filters">
+<button onclick="filter('All')">For you</button>
+<button onclick="filter('Nature')">Nature</button>
+<button onclick="filter('Art')">Art</button>
+<button onclick="filter('Travel')">Travel</button>
+<button onclick="filter('Food')">Food</button>
+<button onclick="filter('Fashion')">Fashion</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const photos=[
+["Beautiful Mountains","Nature","photo-1464822759023-fed622ff2c3b"],
+["Ocean Dreams","Nature","photo-1500375592092-40eb2168fd21"],
+["Modern Architecture","Art","photo-1487958449943-2429e8be8625"],
+["Coffee Time","Food","photo-1495474472287-4d71bcdd2085"],
+["Travel Inspiration","Travel","photo-1500530855697-b586d89ba3ee"],
+["Flowers","Nature","photo-1490750967868-88aa4486c946"],
+["Creative Art","Art","photo-1541961017774-22349e4a1262"],
+["Fashion Ideas","Fashion","photo-1483985988355-763728e1935b"],
+["Green Forest","Nature","photo-1441974231531-c6227db76b6e"],
+["Coastal Life","Travel","photo-1519046904884-53103b34b206"],
+["Fresh Bread","Food","photo-1509440159596-0249088772ff"],
+["Street Style","Fashion","photo-1529139574466-a303027c1d8b"]
+];
+let selected='All';
+function render(){
+let q=document.getElementById('search').value.toLowerCase();
+document.getElementById('grid').innerHTML=photos.filter(p=>(selected==='All'||p[1]===selected)&&p[0].toLowerCase().includes(q)).map(p=>`
+<article class="card">
+<img loading="lazy" src="https://images.unsplash.com/${p[2]}?auto=format&fit=crop&w=700&q=80" alt="${p[0]}">
+<div>${p[0]}</div>
+</article>`).join('');
+}
+function filter(c){selected=c;render()}
+document.getElementById('search').addEventListener('input',render);
+document.getElementById('file').addEventListener('change',e=>{
+const f=e.target.files[0];if(!f)return;
+const url=URL.createObjectURL(f);
+const card=document.createElement('article');card.className='card';
+const img=document.createElement('img');img.src=url;
+const title=document.createElement('div');title.textContent=f.name;
+card.append(img,title);document.getElementById('grid').prepend(card);
+});
+render();
+</script>
+</body>
+</html>
